@@ -1,0 +1,86 @@
+<%= render template: 'distribution/distribution-form/about-this-distribution' %>
+
+<div class="p-4 w-25">
+  <form>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">N = </span>
+      </div>
+      <input
+        type="number"
+        min="1"
+        class="form-control"
+        name="generation-count"
+        id="generation-count-distribution-input"
+        placeholder="Enter generation count value"
+        oninvalid="validate(this, 1)"
+        oninput="this.setCustomValidity('')"
+        required
+      >
+    </div>
+
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1"> max n = </span>
+      </div>
+      <input
+        type="number"
+        min="0.01"
+        class="form-control"
+        name="right-boundary"
+        step="0.01"
+        id="right-boundary-distribution-input"
+        placeholder="Enter right boundary of calculation"
+        oninvalid="validate(this, 1)"
+        oninput="this.setCustomValidity('')"
+        required
+      >
+    </div>
+
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">μ = </span>
+      </div>
+      <input
+        type="number"
+        class="form-control"
+        name="mu"
+        id="mu-distribution-input"
+        placeholder="Enter the mu value"
+        step="0.01"
+        oninvalid="Number(this.value) < 0
+          ? this.setCustomValidity('Mu value should be greater than Zero')
+          : this.setCustomValidity('Mu value is required field')"
+        oninput="this.setCustomValidity('')"
+        required
+      >
+    </div>
+    <div class="mt-3"> <button type="submit" class="btn btn-success btn-lg w-100">Рахувати</button></div>
+    <div class="mt-3"><button type="button" class="btn btn-outline-success w-100" data-toggle="modal" data-target="#about-this-distribution-modal">
+      ? Довідка
+    </button></div>
+    <div class="mt-3"><%= render template: 'distribution/distribution-form/export' %></div>
+  </form>
+</div>
+
+<script>
+    function validate(input, minExpectedValue) {
+        if (Number(input.value) < minExpectedValue) {
+            input.setCustomValidity(`Generation count should be greater than ${minExpectedValue}`);
+        }
+    }
+
+    function fillForm() {
+        const params = (new URL(document.location)).searchParams;
+
+        const generationCount = params.get("generation-count");
+        const rightBoundary = params.get("right-boundary");
+        const mu = params.get("mu");
+
+        document.getElementById('generation-count-distribution-input').value = generationCount ? Number(generationCount) : 1000;
+        document.getElementById('right-boundary-distribution-input').value = rightBoundary ? Number(rightBoundary) : 20;
+        document.getElementById('mu-distribution-input').value = mu ? Number(mu) : 0.5;
+    }
+
+    fillForm();
+</script>

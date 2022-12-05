@@ -1,0 +1,61 @@
+<div id="expected-generation-result" class="d-flex flex-row pt-4" style="visibility: hidden; font-size: 16px;">
+  <div class="d-flex flex-column pt-4 pl-5">
+    <div><b>Аналітичний метод</b> </div>
+    <div id="analytic-mean-value">Математичне очікування: </div>
+    <div id="analytic-variance-value" class="mb-5" >Дисперсія: </div>
+    <div><b>Метод інтервалів</b></div>
+    <div id="intervals-mean-value">Математичне очікування: </div>
+    <div id="intervals-variance-value">Дисперсія: </div>
+    <div id="intervals-deviation-value" class="mb-5">Похибка: </div>
+  </div>
+
+  <div class="d-flex flex-column pt-4 pl-5">
+    <div><b>Метод Неймана</b></div>
+    <div id="neumann-mean-value">Математичне очікування: </div>
+    <div id="neumann-variance-value">Дисперсія: </div>
+    <div id="neumann-deviation-value" class="mb-4">Похибка: </div>
+    <div><b>Метод Метрополісу</b></div>
+    <div id="metropolis-mean-value">Математичне очікування: </div>
+    <div id="metropolis-variance-value">Дисперсія: </div>
+    <div id="metropolis-deviation-value" class="mb-5">Похибка: </div>
+  </div>
+
+</div>
+
+<script>
+  function fillGenerationResults() {
+      if (!window.calculationResult) return;
+      document.getElementById('expected-generation-result').style.visibility = 'visible';
+
+      const {
+          pdfMeanValue,
+          pdfVarianceValue,
+          neumannMethodExpectedValue,
+          neumannMethodVariance,
+          neumannMethodDeviation,
+          metropolisMethodExpectedValue,
+          metropolisMethodVariance,
+          metropolisMethodDeviation,
+          intervalsMethodExpectedValue,
+          intervalsMethodVariance,
+          intervalsMethodDeviation,
+      } = window.calculationResult;
+
+      document.getElementById('analytic-mean-value').textContent += pdfMeanValue;
+      document.getElementById('analytic-variance-value').textContent += pdfVarianceValue;
+
+      document.getElementById('neumann-mean-value').textContent += neumannMethodExpectedValue;
+      document.getElementById('neumann-variance-value').textContent += neumannMethodVariance;
+      document.getElementById('neumann-deviation-value').textContent += neumannMethodDeviation;
+
+      document.getElementById('metropolis-mean-value').textContent += metropolisMethodExpectedValue;
+      document.getElementById('metropolis-variance-value').textContent += metropolisMethodVariance;
+      document.getElementById('metropolis-deviation-value').textContent += metropolisMethodDeviation;
+
+      document.getElementById('intervals-mean-value').textContent += intervalsMethodExpectedValue;
+      document.getElementById('intervals-variance-value').textContent += intervalsMethodVariance;
+      document.getElementById('intervals-deviation-value').textContent += intervalsMethodDeviation;
+  }
+
+  fillGenerationResults();
+</script>

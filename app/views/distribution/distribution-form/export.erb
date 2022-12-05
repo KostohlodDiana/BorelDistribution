@@ -1,0 +1,86 @@
+<div class="btn-group" id="export-calculation-data" style="visibility: hidden">
+  <button type="button" class="btn btn-outline-primary dropdown-toggle w-200"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Експорт
+  </button>
+  <div class="dropdown-menu">
+    <a class="dropdown-item" id="export-as-json">JSON</a>
+    <a class="dropdown-item" id="export-as-xlsx">XLSX</a>
+  </div>
+</div>
+
+<script>
+    function initExport() {
+        if (!window.calculationResult) return;
+
+        const FILENAME_PREFIX = 'BorelDistributionDataExport';
+
+        const initExportJson = () => {
+            // Init export as JSON
+            document.getElementById('export-calculation-data').style.visibility = 'visible';
+            const jsonExportElement = document.getElementById('export-as-json');
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(window.calculationResult, null, 4));
+            jsonExportElement.setAttribute("href", dataStr);
+            jsonExportElement.setAttribute("download", `${FILENAME_PREFIX}.json`);
+        };
+
+        const initExportXlsx = () => {
+            const xlsxExportButton = document.getElementById('export-as-xlsx');
+            xlsxExportButton.addEventListener('click', () => {
+                const optionsInfo = [
+                    ["Generation count", window.calculationResult.options.generationCount],
+                    ["Right boundary", window.calculationResult.options.max_x],
+                    ["Step", window.calculationResult.options.step],
+                    ["Mu", window.calculationResult.options.mu],
+                    [''],
+                ];
+
+                const exportValuesInfo = [
+                    ['Аналітичний метод'],
+                    ['Математичне очікування', window.calculationResult.pdfMeanValue],
+                    ['Дисперсія', window.calculationResult.pdfVarianceValue],
+                    [''],
+                    ['Метод інтервалів'],
+                    ['Математичне очікування', window.calculationResult.intervalsMethodExpectedValue],
+                    ['Дисперсія', window.calculationResult.intervalsMethodVariance],
+                    ['Похибка', window.calculationResult.intervalsMethodDeviation],
+                    [''],
+                    ['Метод Неймана'],
+                    ['Математичне очікування', window.calculationResult.neumannMethodExpectedValue],
+                    ['Дисперсія', window.calculationResult.neumannMethodVariance],
+                    ['Похибка', window.calculationResult.neumannMethodDeviation],
+                    [''],
+                    ['Метод Метрополіса'],
+                    ['Математичне очікування', window.calculationResult.metropolisMethodExpectedValue],
+                    ['Дисперсія', window.calculationResult.metropolisMethodVariance],
+                    ['Похибка', window.calculationResult.metropolisMethodDeviation],
+                    [''],
+                ];
+
+                const calculationResultByMethods = [
+                    ['Щільність метода інтервалів', ...window.calculationResult.intervalsMethod],
+                    ['Щільність метода Неймана', ...window.calculationResult.neumannMethod],
+                    ['Щільність метода Метрополіса', ...window.calculationResult.metropolisMethod],
+
+                ];
+
+                const xlsxArrayData = [
+                    ...optionsInfo,
+                    ...exportValuesInfo,
+                    ...calculationResultByMethods,
+                ];
+
+                const SHEET_NAME = 'BorelDistributionData';
+                const XLSX = window.XLSX;
+                const wb = XLSX.utils.book_new();
+                wb.SheetNames.push(SHEET_NAME);
+                wb.Sheets[SHEET_NAME] = XLSX.utils.aoa_to_sheet(xlsxArrayData);
+                XLSX.writeFile(wb, `${FILENAME_PREFIX}.xlsx`);
+            });
+        };
+
+        initExportJson();
+        initExportXlsx();
+    }
+
+    initExport();
+</script>
